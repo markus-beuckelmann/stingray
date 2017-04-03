@@ -729,11 +729,15 @@ class Lightcurve(object):
         If format\_ is 'pickle': class object is set.
         """
 
-        if format_ == 'ascii' or format_ == 'hdf5':
-            return io.read(filename, format_)
+        if format_ == 'ascii':
+            data = io.read(filename, format_)
+            return Lightcurve(np.asarray(data['col1']), np.asarray(data['col2']))
+        elif format_ == 'hdf5':
+            data = io.read(filename, format_)
+            return Lightcurve(data['time'], data['counts'])
 
         elif format_ == 'pickle':
-            self = io.read(filename, format_)
+            return io.read(filename, format_)
 
         else:
             utils.simon("Format not understood.")
